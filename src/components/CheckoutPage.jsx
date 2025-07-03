@@ -8,26 +8,17 @@ const CheckoutPage = () => {
   const navigate = useNavigate();
   const mutation = useOrder();
 
-  const [form, setForm] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    delivery_address: '',
-  });
+  const [type, setType] = useState('delivery');
+  const [deliveryAddress, setDeliveryAddress] = useState('');
 
-  const total = cart
-    .reduce((sum, item) => sum + item.price * item.quantity, 0)
-    .toFixed(2);
-
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const payload = {
-      ...form,
+      type,
+      delivery_address: type === 'delivery' ? deliveryAddress : null,
       items: cart.map((item) => ({
         product_id: item.id,
         quantity: item.quantity,
@@ -42,7 +33,8 @@ const CheckoutPage = () => {
         alert('✅ Order placed successfully!');
         navigate('/');
       },
-      onError: () => {
+      onError: (error) => {
+        console.error(error);
         alert('❌ Failed to place order. Please try again.');
       },
     });
@@ -62,7 +54,7 @@ const CheckoutPage = () => {
       <p className="section-text">Review your items and complete your order.</p>
 
       <div className="checkout-container" style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
-        {/* Cart Summary */}
+        {/* Order Summary */}
         <div style={{ flex: 1 }}>
           <h3>Order Summary</h3>
           <ul style={{ padding: 0, listStyle: 'none' }}>
@@ -90,52 +82,53 @@ const CheckoutPage = () => {
                     LSL {item.price} × {item.quantity}
                   </p>
                 </div>
-                <div style={{ fontWeight: 'bold' }}>LSL {(item.price * item.quantity).toFixed(2)}</div>
+                <div style={{ fontWeight: 'bold' }}>
+                  LSL {(item.price * item.quantity).toFixed(2)}
+                </div>
               </li>
             ))}
           </ul>
           <h3>Total: LSL {total}</h3>
         </div>
 
-        {/* Form */}
+        {/* Checkout Form */}
         <div style={{ flex: 1 }}>
-          <h3>Delivery Details</h3>
+          <h3>Order Type</h3>
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <input
-              type="text"
-              name="name"
-              placeholder="Full Name"
-              value={form.name}
-              onChange={handleChange}
-              required
-              className="input"
-            />
-            <input
-              type="tel"
-              name="phone"
-              placeholder="Phone Number"
-              value={form.phone}
-              onChange={handleChange}
-              required
-              className="input"
-            />
-            <input
-              type="email"
-              name="email"
-              placeholder="Email (optional)"
-              value={form.email}
-              onChange={handleChange}
-              className="input"
-            />
-            <textarea
-              name="delivery_address"
-              placeholder="Delivery Address"
-              value={form.delivery_address}
-              onChange={handleChange}
-              required
-              className="input"
-              style={{ minHeight: '100px' }}
-            />
+            <div>
+              <label>
+                <input
+                  type="radio"
+                  value="pickup"
+                  checked={type === 'pickup'}
+                  onChange={(e) => setType(e.target.value)}
+                />{' '}
+                Pickup
+              </label>
+              {'  '}
+              <label>
+                <input
+                  type="radio"
+                  value="delivery"
+                  checked={type === 'delivery'}
+                  onChange={(e) => setType(e.target.value)}
+                />{' '}
+                Delivery
+              </label>
+            </div>
+
+            {type === 'delivery' && (
+              <textarea
+                name="delivery_address"
+                placeholder="Delivery Address"
+                value={deliveryAddress}
+                onChange={(e) => setDeliveryAddress(e.target.value)}
+                required
+                className="input"
+                style={{ minHeight: '100px' }}
+              />
+            )}
+
             <button className="btn btn-primary" type="submit" disabled={mutation.isLoading}>
               {mutation.isLoading ? 'Placing Order...' : 'Place Order'}
             </button>

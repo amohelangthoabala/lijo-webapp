@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../CartContext';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 const Header = () => {
   const navigate = useNavigate();
   const [isNavActive, setIsNavActive] = useState(false);
   const [isCartActive, setIsCartActive] = useState(false);
   const { cart, removeFromCart } = useCart();
-  console.log('Cart:', cart); // Inside Header
+  const { user, logout } = useAuth();
 
   const navToggleFunc = () => {
     setIsNavActive(!isNavActive);
@@ -102,11 +103,27 @@ const Header = () => {
               </Link>
             </li>
             <li>
-              <Link to="/testimonials" className="nav-link" onClick={navToggleFunc}>
-                Testimonials
+              <Link to="/orders" className="nav-link" onClick={navToggleFunc}>
+                Orders
               </Link>
             </li>
-          </ul>
+            {user ? (
+                <>
+                  <li><span className="nav-link">Hi, {user.name.split(' ')[0]}</span></li>
+                  <li>
+                    <button className="nav-link" onClick={() => { logout(); navToggleFunc(); }}>
+                      Logout
+                    </button>
+                  </li>
+                </>
+              ) : (
+                <li>
+                  <Link to="/login" className="nav-link" onClick={navToggleFunc}>
+                    Login
+                  </Link>
+                </li>
+              )}
+            </ul>
 
           <div className="navbar-btn-group">
             <button className="shopping-cart-btn" onClick={cartToggleFunc}>

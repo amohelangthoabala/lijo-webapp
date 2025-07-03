@@ -5,6 +5,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import { CartProvider } from './CartContext';
+import { AuthProvider } from './AuthContext';
+
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const queryClient = new QueryClient();
@@ -13,11 +15,13 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
      <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <CartProvider>
-            <App />
-        </CartProvider>
-      </BrowserRouter>
+        <AuthProvider>
+          <BrowserRouter>
+            <CartProvider>
+              <App />
+            </CartProvider>
+          </BrowserRouter>
+        </AuthProvider>
      </QueryClientProvider>
   </React.StrictMode>
 );

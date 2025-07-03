@@ -6,8 +6,10 @@ import CheckoutPage from './components/CheckoutPage';
 //import About from './components/About';
 //import Services from './components/Services';
 import Menu from './components/Menu';
-//import Testimonials from './components/Testimonials';
+import Order from './components/Order';
 //import Footer from './components/Footer';
+import LoginPage from './components/LoginPage';
+import RegisterPage from './components/RegisterPage';
 
 function App() {
   return (
@@ -20,8 +22,10 @@ function App() {
           {/* <Route path="/about" element={<About />} /> */}
           {/* <Route path="/services" element={<Services />} /> */}
           <Route path="/menu" element={<Menu />} />
-          {/* <Route path="/testimonials" element={<Testimonials />} /> */}
+          <Route path="/orders" element={<Order />} />
           <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
         </Routes>
       </main>
 
