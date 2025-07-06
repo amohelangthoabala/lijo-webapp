@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../CartContext';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
 const Header = () => {
@@ -21,6 +20,11 @@ const Header = () => {
     if (isNavActive) navToggleFunc();
   };
 
+  // Safely handle empty cart or missing items
+  const cartItems = cart?.items || [];
+
+  const totalQuantity = cartItems.reduce((total, item) => total + item.quantity, 0);
+
   return (
     <header>
       {/* Cart Panel */}
@@ -29,8 +33,8 @@ const Header = () => {
           <ul className="cart-box-ul">
             <h4 className="cart-h4">Your Cart</h4>
 
-            {cart?.length > 0 ? (
-              cart.map((item, index) => (
+            {cartItems.length > 0 ? (
+              cartItems.map((item, index) => (
                 <li className="cart-item" key={index}>
                   <div className="img-box">
                     <img
@@ -44,7 +48,6 @@ const Header = () => {
                     {item.price}
                     <span className="small"> x {item.quantity}</span>
                   </div>
-                  {/* Optional remove button */}
                   <button
                     onClick={() => removeFromCart(item.id)}
                     style={{
@@ -67,7 +70,11 @@ const Header = () => {
             <button className="btn btn-secondary" onClick={cartToggleFunc}>
               Close
             </button>
-            <button className="btn btn-primary" disabled={cart.length === 0} onClick={() => navigate('/checkout')}>
+            <button
+              className="btn btn-primary"
+              disabled={cartItems.length === 0}
+              onClick={() => navigate('/checkout')}
+            >
               Checkout
             </button>
           </div>
@@ -88,18 +95,18 @@ const Header = () => {
               </Link>
             </li>
             <li>
-              <Link to="/about" className="nav-link" onClick={navToggleFunc}>
-                About
+              <Link to="/dishes" className="nav-link" onClick={navToggleFunc}>
+                Dishes
               </Link>
             </li>
             <li>
-              <Link to="/services" className="nav-link" onClick={navToggleFunc}>
-                Services
+              <Link to="/restaurants" className="nav-link" onClick={navToggleFunc}>
+                Restaurants
               </Link>
             </li>
             <li>
-              <Link to="/menu" className="nav-link" onClick={navToggleFunc}>
-                Our Menu
+              <Link to="/deals" className="nav-link" onClick={navToggleFunc}>
+                Special Deals
               </Link>
             </li>
             <li>
@@ -108,27 +115,35 @@ const Header = () => {
               </Link>
             </li>
             {user ? (
-                <>
-                  <li><span className="nav-link">Hi, {user.name.split(' ')[0]}</span></li>
-                  <li>
-                    <button className="nav-link" onClick={() => { logout(); navToggleFunc(); }}>
-                      Logout
-                    </button>
-                  </li>
-                </>
-              ) : (
+              <>
                 <li>
-                  <Link to="/login" className="nav-link" onClick={navToggleFunc}>
-                    Login
-                  </Link>
+                  <span className="nav-link">Hi, {user.name.split(' ')[0]}</span>
                 </li>
-              )}
-            </ul>
+                <li>
+                  <button
+                    className="nav-link"
+                    onClick={() => {
+                      logout();
+                      navToggleFunc();
+                    }}
+                  >
+                    Logout
+                  </button>
+                </li>
+              </>
+            ) : (
+              <li>
+                <Link to="/login" className="nav-link" onClick={navToggleFunc}>
+                  Login
+                </Link>
+              </li>
+            )}
+          </ul>
 
           <div className="navbar-btn-group">
             <button className="shopping-cart-btn" onClick={cartToggleFunc}>
               <img src="/assets/images/cart.svg" alt="cart" width="18" />
-              <span className="count"> {cart.reduce((total, item) => total + item.quantity, 0)}</span>
+              <span className="count">{totalQuantity}</span>
             </button>
 
             <button className="menu-toggle-btn" onClick={navToggleFunc}>

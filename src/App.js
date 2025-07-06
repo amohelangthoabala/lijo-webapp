@@ -3,13 +3,13 @@ import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Home from './components/Home';
 import CheckoutPage from './components/CheckoutPage';
-//import About from './components/About';
-//import Services from './components/Services';
+import Dish from './components/Dish';
 import Menu from './components/Menu';
 import Order from './components/Order';
-//import Footer from './components/Footer';
 import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
+import BottomNav from './components/BottomNav'; 
+import ProductDetails from './components/ProductDetails'; 
 
 function App() {
   return (
@@ -19,17 +19,17 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
-          {/* <Route path="/about" element={<About />} /> */}
-          {/* <Route path="/services" element={<Services />} /> */}
-          <Route path="/menu" element={<Menu />} />
+          <Route path="/restaurants" element={<Menu />} />
           <Route path="/orders" element={<Order />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/dishes" element={<Dish />} />
+          <Route path="/products/:id" element={<ProductDetails />} />
         </Routes>
       </main>
 
-      {/* <Footer /> */}
+      <BottomNav /> {/* Show bottom nav only on mobile */}
     </div>
   );
 }
